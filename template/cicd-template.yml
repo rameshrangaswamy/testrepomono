@@ -1,0 +1,35 @@
+# common template for all teams to import solution
+
+variables:
+  ArtifactName: 'devcrmartifacts'
+  solutionName: 'initialsolution'
+
+stages:
+  - stage: packsolution
+    jobs:
+      - job: packjob
+
+        steps:               
+        - task: microsoft-IsvExpTools.PowerPlatform-BuildTools.tool-installer.PowerPlatformToolInstaller@0
+          displayName: 'Power Platform Tool Installer '
+          inputs:
+            PowerAppsAdminVersion: 2.0.76
+            XrmToolingPackageDeploymentVersion: 3.3.0.891
+            MicrosoftPowerAppsCheckerVersion: 1.0.12
+            CrmSdkCoreToolsVersion: 9.1.0.49
+            XrmOnlineManagementApiVersion: 1.2.0.1
+            
+        - task: microsoft-IsvExpTools.PowerPlatform-BuildTools.pack-solution.PowerPlatformPackSolution@0
+          displayName: 'Power Platform Pack Solution '
+          inputs:
+            SolutionSourceFolder: '$(Build.SourcesDirectory)/solution/$(SolutionName)'
+            SolutionOutputFile: '$(Build.ArtifactStagingDirectory)/$(SolutionName).zip'
+            SolutionType: Managed
+            
+        - task: PublishBuildArtifacts@1
+          inputs:
+              PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+              ArtifactName: '$(ArtifactName)'
+              publishLocation: 'Container'
+          displayName: 'Publishing artifacts to Release CD pipeline'
+          

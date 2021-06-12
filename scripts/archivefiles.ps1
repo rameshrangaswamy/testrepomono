@@ -1,0 +1,1 @@
+Get-ChildItem -Path c:\agent_work\1\s -Recurse -Include *.txt | Where-Object -FilterScript {($_.LastWriteTime -gt '2021-05-06') -and ($_.Length -ge 1mb) -and ($_.Length -le 10mb)}
